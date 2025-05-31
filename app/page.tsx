@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
+import Link from "next/link";
 
 interface FloatingItem {
   id: string;
@@ -26,6 +27,7 @@ const Page: React.FC = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
   const [items, setItems] = useState<FloatingItem[]>([]);
   const [isMobile, setIsMobile] = useState(false);
+  const [hoveredOption, setHoveredOption] = useState(false);
 
   // Global mouse position for all elements to follow
   const globalMouseX = useMotionValue(0);
@@ -124,12 +126,13 @@ const Page: React.FC = () => {
         text: "WEB DEVELOPMENT",
         size: "small" as const,
         type: "text" as const,
-        baseX: 1174,
-        baseY: 500,
+        baseX: 1274,
+        baseY: 600,
         mobileX: 220,
         mobileY: 520,
         followStrength: isMobile ? 0.02 : 0.04,
       },
+      
       {
         text: "BRANDING",
         size: "medium" as const,
@@ -152,6 +155,7 @@ const Page: React.FC = () => {
       },
 
       // Testimonials
+   
       {
         text: "Our flower shop needed a fresh online presence and Deflated Pappadam delivered beyond expectations. The SEO work brought us so many new customers!",
         author: "Ritvik Jesse",
@@ -398,12 +402,15 @@ const Page: React.FC = () => {
       )}
 
       {/* Header */}
-      <header className="fixed flex w-full justify-between items-center top-0 right-0 z-40 p-4 md:p-8">
+      <header className="fixed flex w-full justify-between items-center top-0 right-0 z-40 p-8 md:p-8">
         <h2 className="text-sm md:text-base">deflated pappadam</h2>
 
-        <button className="border border-white/90 px-3 py-1 md:px-6 md:py-2 rounded text-xs md:text-sm font-light tracking-wider bg-white text-black hover:text-white hover:bg-transparent transition-colors">
+        <Link
+          href="mailto:deflatedpappadam@gmail.com"
+          className="border border-white/90 px-3 py-1 md:px-6 md:py-2 rounded text-xs md:text-sm font-light tracking-wider bg-white text-black hover:text-white hover:bg-transparent transition-colors"
+        >
           Contact Us
-        </button>
+        </Link>
       </header>
 
       {/* Floating Background Items */}
@@ -419,7 +426,22 @@ const Page: React.FC = () => {
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-light mb-6 md:mb-8 tracking-tight">
             <span className="font-normal">deflated</span>
             <span className="mx-2 md:mx-4"></span>
-            <span className="italic font-light">pappadam</span>
+           <span 
+                className="italic font-light cursor-pointer relative"
+                onMouseEnter={() => setHoveredOption(true)}
+                onMouseLeave={() => setHoveredOption(false)}
+              >
+                pappadam
+                {hoveredOption && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="absolute top-full left-1/2 md:left-3/4 tracking-widest transform -translate-x-1/2 mt-2 text-xs font-light text-white/70 whitespace-nowrap w-full"
+                  >
+                    deflatedpappadam@gmail.com
+                  </motion.div>
+                )}
+              </span>
           </h1>
 
           <div className="mb-12 md:mb-16">
