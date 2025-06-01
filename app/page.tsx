@@ -43,7 +43,7 @@ const Page: React.FC = () => {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-black text-white overflow-x-hidden relative"
+      className="min-h-screen bg-black text-white overflow-x-hidden relative h-fit"
       style={{ 
         transform: 'translate3d(0,0,0)',
         backfaceVisibility: 'hidden',
@@ -84,8 +84,6 @@ const Page: React.FC = () => {
       <AboutPage/>
       <Footer/>
 
-      {/* Mobile-specific bottom spacing */}
-      {isMobile && <div className="h-screen"></div>}
     </div>
   );
 };

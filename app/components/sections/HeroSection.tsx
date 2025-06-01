@@ -6,14 +6,14 @@ import { josefinSans } from "@/app/utils/font";
 
 const HeroSection: React.FC<HeroSectionProps> = ({ hoveredOption, setHoveredOption }) => {
   return (
-    <main className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 md:px-8">
+    <main className="relative z-10 min-h-screen max-h-screen overflow-hidden flex flex-col items-center justify-center px-4 md:px-8">
       <motion.div 
         className="text-center"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
       >
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-light mb-6 md:mb-8 tracking-tight">
+        <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-8xl font-light mb-6 md:mb-8 tracking-tight">
           <motion.span 
             className="font-normal"
             whileHover={{ scale: 1.05 }}

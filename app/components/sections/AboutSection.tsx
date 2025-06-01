@@ -117,7 +117,7 @@ const AboutPage: React.FC = () => {
               animate={detailsInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.6 }}
             >
-              Based in the vibrant city of Thiruvananthapuram, Kerala, we are a dynamic freelance collective of recent graduates who&apos;ve come together with a shared passion for technology and innovation. Our team consists of Ritin D George, Adithya Krishnan, Rhon S George, and Vinu B Kurup — each bringing unique skills to the table.
+              Based in the vibrant city of Thiruvananthapuram, Kerala, we are a dynamic freelance collective of recent graduates who&apos;ve come together with a shared passion for technology and innovation.  Whether it&apos;s building, designing, or innovating, we thrive on turning &ldquo;what if&rdquo; into &ldquo;what&apos;s next&rdquo;.
              </motion.p>
           </motion.div>
 
@@ -154,23 +154,10 @@ const AboutPage: React.FC = () => {
                   }}
                 >
                   <motion.div
-                    className="text-sm font-light tracking-wider mb-2 cursor-pointer"
+                    className="text-sm font-light tracking-wider mb-2 cursor-pointer flex justify-center items-center"
                     whileHover={{ scale: 1.1 }}
                   >
-                   Our Works
-                  </motion.div>
-                  <motion.div
-                    className="text-xs text-white/50 tracking-widest"
-                    animate={{
-                      opacity: [0.5, 1, 0.5],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                  >
-                    ⭐ Star Us In github ⭐
+                  <img src='images/logo.png' alt="Deflated Pappadam Logo" className="w-full" />
                   </motion.div>
                 </motion.div>
               </motion.div>
