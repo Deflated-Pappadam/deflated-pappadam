@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useMotionValue, useScroll } from "framer-motion";
 import { FloatingItem } from "./types";
-// import { useMouseTracking } from "./hooks/useMouseTracking";
+import { useMouseTracking } from "./hooks/useMouseTracking";
 import { useMobileDetection } from "./hooks/useMobileDetection";
 import { getPortfolioItems } from "./data/PortfolioData";
 import Navbar from "./components/ui/NavBar";
@@ -24,12 +24,13 @@ const Page: React.FC = () => {
   const globalMouseY = useMotionValue(0);
   
   // Mouse tracking hook
-  // const { cursorRef } = useMouseTracking(globalMouseX, globalMouseY, isMobile);
+  const { cursorRef } = useMouseTracking(globalMouseX, globalMouseY, isMobile);
   
   const { scrollY } = useScroll();
 
   // Initialize floating items
   useEffect(() => {
+    if(cursorRef.current) {}
     const portfolioItems = getPortfolioItems(isMobile);
     const initialItems: FloatingItem[] = portfolioItems.map((item, index) => ({
       id: `item-${index}`,
