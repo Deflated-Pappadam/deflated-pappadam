@@ -94,7 +94,7 @@ const AboutPage: React.FC = () => {
       </section>
 
       {/* Detailed About Section */}
-      <section ref={detailsRef} className="min-h-screen flex items-center px-8 relative">
+      <section ref={detailsRef} className="min-h-[60vh] flex items-center px-8 relative">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           {/* Left Content */}
           <motion.div

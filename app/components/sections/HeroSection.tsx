@@ -13,7 +13,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ hoveredOption, setHoveredOpti
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
       >
-        <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-8xl font-light mb-6 md:mb-8 tracking-tight">
+        <h1 className=" md:text-[6vw] text-[8vw] font-light mb-6 md:mb-8 tracking-tight">
           <motion.span 
             className="font-normal"
             whileHover={{ scale: 1.05 }}

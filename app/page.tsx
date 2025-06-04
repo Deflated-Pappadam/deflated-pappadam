@@ -10,6 +10,7 @@ import FloatingItemComponent from "./components/ui/FloatingItemComponent";
 import HeroSection from "./components/sections/HeroSection";
 import AboutPage from "./components/sections/AboutSection";
 import Footer from "./components/ui/Footer";
+// import ProjectSection from "./components/sections/ProjectSection";
 
 const Page: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -82,6 +83,7 @@ const Page: React.FC = () => {
       {/* Main Content */}
       <HeroSection hoveredOption={hoveredOption} setHoveredOption={setHoveredOption} />
       <AboutPage/>
+      {/* <ProjectSection/> */}
       <Footer/>
 
     </div>

@@ -2,7 +2,6 @@ import React, { useEffect, useMemo } from "react";
 import { motion, useSpring, useTransform } from "framer-motion";
 import { FloatingItemProps } from "@/app/types";
 
-
 const FloatingItemComponent = React.memo(({ 
   item, 
   globalMouseX, 
@@ -74,29 +73,48 @@ const FloatingItemComponent = React.memo(({
     }
   }, [mouseParallaxX, mouseParallaxY, scrollParallaxY, itemX, itemY, isMobile]);
 
+  // Convert position percentages to viewport units
+  const getViewportPosition = (position: number, isMobile: boolean, isX: boolean = true) => {
+    if (isMobile) {
+      // For mobile, use a simpler calculation based on mobile viewport
+      // Assuming mobile coordinates are designed for ~400px width viewport
+      const mobileBaseWidth = 400;
+      const mobileBaseHeight = 800;
+      const percentage = position / (isX ? mobileBaseWidth : mobileBaseHeight) * 100;
+      return `${Math.max(0, Math.min(percentage, 95))}${isX ? 'vw' : 'vh'}`;
+    }
+    // For desktop, convert pixel values to viewport percentages
+    const percentage = (position / (isX ? 1920 : 1080)) * 110;
+    return `${Math.max(0, Math.min(percentage, 95))}${isX ? 'vw' : 'vh'}`;
+  };
+
+  // Calculate responsive sizes using viewport units
+  const getResponsiveSize = (size: number, isMobile: boolean, isWidth: boolean = true) => {
+    if (isMobile) {
+      // For mobile, use more conservative sizing
+      const mobileBaseWidth = 400;
+      const mobileBaseHeight = 800;
+      const percentage = (size / (isWidth ? mobileBaseWidth : mobileBaseHeight)) * 100;
+      return `${Math.max(5, Math.min(percentage, 80))}${isWidth ? 'vw' : 'vh'}`;
+    }
+    const percentage = (size / (isWidth ? 1920 : 1080)) * 120;
+    return `${Math.max(1, Math.min(percentage, 90))}${isWidth ? 'vw' : 'vh'}`;
+  };
+
   const baseStyle = useMemo(() => ({
-    width: isMobile
-      ? item.mobileWidth
-        ? `${item.mobileWidth}px`
-        : item.width
-        ? `${item.width * 0.6}px`
-        : "auto"
-      : item.width
-      ? `${item.width}px`
-      : "auto",
-    height: isMobile
-      ? item.mobileHeight
-        ? `${item.mobileHeight}px`
-        : item.height
-        ? `${item.height * 0.6}px`
-        : "auto"
-      : item.height
-      ? `${item.height}px`
-      : "auto",
+    width: item.width ? getResponsiveSize(item.width, isMobile, true) : "auto",
+    height: item.height ? getResponsiveSize(item.height, isMobile, false) : "auto",
+    fontSize: isMobile ? 'clamp(12px, 4vw, 18px)' : 'clamp(14px, 1.2vw, 24px)', // More reliable responsive font size
   }), [item, isMobile]);
 
-  const positionX = isMobile ? item.mobileX ?? item.baseX * 0.3 : item.baseX;
-  const positionY = isMobile ? item.mobileY ?? item.baseY * 0.8 : item.baseY;
+  // Use mobile-specific positions if available, otherwise use desktop positions
+  const positionX = isMobile && item.mobileX !== undefined 
+    ? getViewportPosition(item.mobileX, true, true)
+    : getViewportPosition(item.baseX, false, true);
+    
+  const positionY = isMobile && item.mobileY !== undefined 
+    ? getViewportPosition(item.mobileY, true, false)
+    : getViewportPosition(item.baseY, false, false);
 
   if (item.type === "image") {
     return (
@@ -107,7 +125,8 @@ const FloatingItemComponent = React.memo(({
           top: positionY,
           x: isMobile ? 0 : itemX,
           y: isMobile ? 0 : itemY,
-          ...baseStyle,
+          width: baseStyle.width,
+          height: baseStyle.height,
         }}
       >
         <img
@@ -124,20 +143,21 @@ const FloatingItemComponent = React.memo(({
   if (item.type === "testimonial" && !isMobile) {
     return (
       <motion.div
-        className="absolute will-change-transform "
+        className="absolute will-change-transform"
         style={{
           left: positionX,
           top: positionY,
           x: isMobile ? 0 : itemX,
           y: isMobile ? 0 : itemY,
-          ...baseStyle,
+          width: item.width ? getResponsiveSize(item.width, isMobile, true) : 'auto',
+          maxWidth: '25vw',
         }}
       >
-        <div className="bg-white/8 backdrop-blur-sm border border-white/10 p-4 md:p-6 rounded-lg max-w-sm transition-all duration-300 hover:bg-white/12 hover:border-white/20">
-          <p className={`${isMobile ? "text-xs" : "text-sm"} font-light leading-relaxed mb-3 md:mb-4 text-white/90`}>
+        <div className="bg-white/8 backdrop-blur-sm border border-white/10 p-4 md:p-6 rounded-lg transition-all duration-300 hover:bg-white/12 hover:border-white/20">
+          <p className="text-[0.9vw] font-light leading-relaxed mb-3 md:mb-4 text-white/90" >
             &quot;{item.text}&quot;
           </p>
-          <div className={`${isMobile ? "text-xs" : "text-xs"} font-light text-white/70`}>
+          <div className="text-xs font-light text-white/70" style={{ fontSize: isMobile ? 'clamp(8px, 2.5vw, 12px)' : 'clamp(10px, 0.7vw, 14px)' }}>
             — {item.author}
             {item.title && <br />}
             {item.title}
@@ -147,32 +167,38 @@ const FloatingItemComponent = React.memo(({
     );
   }
 
-  const isMainTitle = item.text === "visual" || item.text === "identity";
-  if (item.type !== "testimonial" ) {
-  return (
-    <motion.div
-      className={`absolute whitespace-pre-line font-light tracking-wider will-change-transform ${
-        isMainTitle
-          ? `${isMobile ? "text-xs" : "text-sm"} opacity-60`
-          : item.size === "small"
-          ? `${isMobile ? "text-xs" : "text-xs"} opacity-50`
-          : item.size === "medium"
-          ? `${isMobile ? "text-xs" : "text-sm"} opacity-60`
-          : `${isMobile ? "text-sm" : "text-base"} opacity-40`
-      }`}
-      style={{
-        left: positionX,
-        top: positionY,
-        x: isMobile ? 0 : itemX,
-        y: isMobile ? 0 : itemY,
-        fontFamily: isMainTitle ? "system-ui, sans-serif" : "Georgia, serif",
-        fontWeight: isMainTitle ? "300" : "400",
-      }}
-    >
-      {item.text}
-    </motion.div>
-  );
-}
+  const isMainTitle = item.text === "visual" || item.text === "identity" || item.text?.includes("VISUAL");
+  
+  if (item.type !== "testimonial") {
+    return (
+      <motion.div
+        className={`absolute whitespace-pre-line font-light tracking-wider will-change-transform ${
+          isMainTitle
+            ? "opacity-60"
+            : item.size === "small"
+            ? "opacity-50"
+            : item.size === "medium"
+            ? "opacity-60"
+            : "opacity-40"
+        }`}
+        style={{
+          left: positionX,
+          top: positionY,
+          x: isMobile ? 0 : itemX,
+          y: isMobile ? 0 : itemY,
+          fontFamily: isMainTitle ? "system-ui, sans-serif" : "Georgia, serif",
+          fontWeight: isMainTitle ? "300" : "400",
+          fontSize: item.size === "small" 
+            ? (isMobile ? 'clamp(10px, 3.5vw, 16px)' : 'clamp(12px, 1vw, 18px)')
+            : item.size === "medium"
+            ? (isMobile ? 'clamp(12px, 4.5vw, 20px)' : 'clamp(16px, 1.4vw, 24px)')
+            : (isMobile ? 'clamp(14px, 5vw, 24px)' : 'clamp(18px, 1.6vw, 28px)'),
+        }}
+      >
+        {item.text}
+      </motion.div>
+    );
+  }
 });
 
 FloatingItemComponent.displayName = "FloatingItemComponent";
